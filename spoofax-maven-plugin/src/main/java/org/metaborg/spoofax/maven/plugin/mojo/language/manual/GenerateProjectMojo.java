@@ -12,6 +12,7 @@ import org.metaborg.core.language.LanguageVersion;
 import org.metaborg.core.project.ProjectException;
 import org.metaborg.spoofax.maven.plugin.AbstractSpoofaxMojo;
 import org.metaborg.spoofax.maven.plugin.SpoofaxInit;
+import org.metaborg.spoofax.meta.core.config.SdfVersion;
 import org.metaborg.spoofax.meta.core.generator.general.AnalysisType;
 import org.metaborg.spoofax.meta.core.generator.general.ContinuousLanguageSpecGenerator;
 import org.metaborg.spoofax.meta.core.generator.general.LangSpecGenerator;
@@ -83,9 +84,16 @@ public class GenerateProjectMojo extends AbstractSpoofaxMojo {
 
                 final LangSpecGenerator newGenerator = new LangSpecGenerator(settings);
                 newGenerator.generateAll();
+                SdfVersion version;
+
+                if(settings.syntaxType == SyntaxType.SDF2) {
+                    version = SdfVersion.sdf2;
+                } else {
+                    version = SdfVersion.sdf3;
+                }
 
                 final ContinuousLanguageSpecGenerator generator =
-                    new ContinuousLanguageSpecGenerator(settings.generatorSettings);
+                    new ContinuousLanguageSpecGenerator(settings.generatorSettings, version);
                 generator.generateAll();
             } catch(IOException ex) {
                 throw new MojoFailureException("Failed to generate project files", ex);

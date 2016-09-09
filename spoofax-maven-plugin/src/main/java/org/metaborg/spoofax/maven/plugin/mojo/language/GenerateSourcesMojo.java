@@ -7,7 +7,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.metaborg.core.MetaborgException;
-import org.metaborg.core.MetaborgRuntimeException;
 import org.metaborg.core.action.CompileGoal;
 import org.metaborg.core.build.BuildInput;
 import org.metaborg.core.build.BuildInputBuilder;
@@ -55,10 +54,20 @@ public class GenerateSourcesMojo extends AbstractSpoofaxLanguageMojo {
             // @formatter:on
 
             SpoofaxInit.spoofax().processorRunner.build(input, null, null).schedule().block();
-        } catch(MetaborgException | InterruptedException e) {
-            throw new MojoExecutionException("Generating sources failed unexpectedly", e);
-        } catch(MetaborgRuntimeException e) {
-            throw new MojoFailureException("Generating sources failed", e);
+        } catch(MetaborgException e) {
+            if(e.getCause() != null) {
+                logger.error("Exception thrown during generation", e);
+                logger.error("GENERATION FAILED");
+            } else {
+                final String message = e.getMessage();
+                if(message != null && !message.isEmpty()) {
+                    logger.error(message);
+                }
+                logger.error("GENERATION FAILED");
+            }
+            throw new MojoFailureException("GENERATION FAILED", e);
+        } catch(InterruptedException e) {
+            // Ignore
         }
     }
 }
