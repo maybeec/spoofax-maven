@@ -14,7 +14,7 @@ project.
 buildscript {
   repositories {
     maven {
-      url "http://artifacts.metaborg.org/content/repositories/snapshots/"
+      url "http://artifacts.metaborg.org/content/repositories/in4303/"
     }
   }
   dependencies {
@@ -59,7 +59,7 @@ Gradle.
 buildscript {
   repositories {
     maven {
-      url "http://artifacts.metaborg.org/content/repositories/snapshots/"
+      url "http://artifacts.metaborg.org/content/repositories/in4303/"
     }
   }
   dependencies {
