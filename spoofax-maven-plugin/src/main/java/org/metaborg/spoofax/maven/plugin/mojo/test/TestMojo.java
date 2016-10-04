@@ -46,6 +46,7 @@ public class TestMojo extends AbstractSpoofaxMojo {
         }
 
         discoverLanguages();
+        discoverSelf();
 
         final Iterable<? extends ILanguageImpl> sptLangs =
             SpoofaxInit.spoofax().languageService.getAllImpls("org.metaborg", "org.metaborg.meta.lang.spt");

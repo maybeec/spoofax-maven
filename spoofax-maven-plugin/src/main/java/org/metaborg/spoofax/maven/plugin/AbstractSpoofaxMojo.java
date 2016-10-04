@@ -190,6 +190,13 @@ public abstract class AbstractSpoofaxMojo extends AbstractMojo {
         setContextBool(project, DISCOVERED_ID, true);
     }
 
+    public void discoverSelf() {
+        if(!project.getPackaging().equals(Constants.languageSpecType)) {
+            return;
+        }
+        loadComponents(project.getBasedir());
+    }
+    
     /**
      * Get the dependency tree so that we also see dependencies that have been omitted by Maven. Maven does conflict
      * resolution so that it only has to load a single version of the artifact in the JVM, which makes sense for Java,
@@ -309,6 +316,40 @@ public abstract class AbstractSpoofaxMojo extends AbstractMojo {
         }
 
         getLog().error("Artifact " + artifact + " has no files, cannot load languages");
+        return null;
+    }
+
+    private Iterable<ILanguageComponent> loadComponents(File file) {
+        if(file != null && file.exists()) {
+            final String url = (file.isDirectory() ? "file:" : "zip:") + file.getPath();
+            final FileObject location = SpoofaxInit.spoofax().resourceService.resolve(url);
+
+            try {
+                if(!location.exists()) {
+                    getLog().error("Artifact location" + location + " does not exist, cannot load languages");
+                    return null;
+                }
+
+                final Iterable<ILanguageDiscoveryRequest> requests =
+                    SpoofaxInit.spoofax().languageDiscoveryService.request(location);
+                final Iterable<ILanguageComponent> components =
+                    SpoofaxInit.spoofax().languageDiscoveryService.discover(requests);
+
+                if(Iterables.isEmpty(components)) {
+                    getLog().error("No languages were discovered at " + location);
+                    return null;
+                }
+
+                for(ILanguageComponent component : components) {
+                    getLog().info("Loaded " + component);
+                }
+
+                return components;
+            } catch(FileSystemException | MetaborgException e) {
+                getLog().error("Unexpected error while discovering languages at " + location, e);
+                return null;
+            }
+        }
         return null;
     }
 }

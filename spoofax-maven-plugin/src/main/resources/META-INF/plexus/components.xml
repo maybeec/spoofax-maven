@@ -68,10 +68,8 @@
                 org.apache.maven.plugins:maven-compiler-plugin:compile,
               </compile>
               <install>
-                org.apache.maven.plugins:maven-install-plugin:install
               </install>
               <deploy>
-                org.apache.maven.plugins:maven-deploy-plugin:deploy
               </deploy>
             </phases>
           </lifecycle>
@@ -99,6 +97,10 @@
               <test>
                 org.metaborg:spoofax-maven-plugin:${project.version}:test
               </test>
+              <install>
+              </install>
+              <deploy>
+              </deploy>
             </phases>
           </lifecycle>
         </lifecycles>
