@@ -41,7 +41,6 @@ public class TransformMojo extends AbstractSpoofaxMojo {
     @Parameter(defaultValue = "true") boolean includeDependencies;
     @Parameter private List<FileSet> fileSets;
     @Parameter private List<FileSet> auxFileSets;
-    @Parameter(defaultValue = "${basedir}", readonly = true, required = true) private File basedir;
 
 
     @Override public void execute() throws MojoFailureException, MojoExecutionException {
@@ -102,7 +101,7 @@ public class TransformMojo extends AbstractSpoofaxMojo {
         if(fileSets != null && !fileSets.isEmpty()) {
             for(FileSet fileSet : fileSets) {
                 FileObject directory = SpoofaxInit.spoofax().resourceService
-                    .resolve(fileSet.getDirectory() != null ? absoluteFile(fileSet.getDirectory()) : basedir);
+                    .resolve(fileSet.getDirectory() != null ? absoluteFile(fileSet.getDirectory()) : basedir());
                 if(directory.exists()) {
                     files.addAll(Arrays.asList(
                         directory.findFiles(new FileSetSelector(fileSet.getIncludes(), fileSet.getExcludes()))));
